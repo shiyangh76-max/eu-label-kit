@@ -539,6 +539,18 @@
   }
 
   /* ---------- wiring ---------- */
+  function placeIntro() {
+    var intro = document.querySelector('.intro');
+    var left = $('paneLeft'), right = $('paneRight');
+    if (!intro || !left || !right) return;
+    var mobile = window.matchMedia('(max-width: 940px)').matches;
+    var host = mobile ? right : left;
+    if (intro.parentNode !== host) {
+      if (mobile) host.insertBefore(intro, host.firstChild);
+      else host.insertBefore(intro, host.firstChild);
+    }
+  }
+
   function wire() {
     try { if (window.self !== window.top) document.body.classList.add('is-framed'); } catch (e) { document.body.classList.add('is-framed'); }
     load();
@@ -601,6 +613,8 @@
       $('buyLink').textContent = 'Buy for $9';
       $('buyLink').onclick = function (e) { e.preventDefault(); $('gateMsg').className = 'gate-msg'; $('gateMsg').textContent = 'Checkout opens to the first buyers this week. If you already have a code, paste it below.'; };
     }
+    placeIntro();
+    window.addEventListener('resize', placeIntro);
     window.addEventListener('beforeunload', save);
     setMode(S.mode);
     if (S.licensed) buildPack();
