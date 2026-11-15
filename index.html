@@ -4,47 +4,52 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>EU Label Kit: GPSR labels, responsible person letter, declaration of conformity</title>
-<meta name="description" content="Fill in one form and print the four documents EU marketplaces ask for: GPSR product label, EU responsible person mandate, declaration of conformity, and a listing compliance block.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d3b2f'/><text x='16' y='23' font-family='serif' font-size='17' font-weight='700' fill='%23f6f1e4' text-anchor='middle'>E</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>EU Label Kit. The label that gets your listing approved</title>
+<meta name="description" content="Print the four documents EU marketplaces ask for: GPSR product label, EU responsible person mandate, declaration of conformity, listing text. Runs in your browser.">
 <meta property="og:title" content="EU Label Kit">
-<meta property="og:description" content="Print the four documents EU marketplaces ask for: GPSR label, EU responsible person mandate, declaration of conformity, listing block. Batch a whole CSV.">
+<meta property="og:description" content="Print the four documents EU marketplaces ask for. One form, one pack, nothing uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://shiyangh76-max.github.io/eu-label-kit/">
-<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23111'/><rect x='7' y='9' width='18' height='14' fill='none' stroke='%23fbfaf7' stroke-width='2'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="brand"><span class="mark">E</span><span class="brand-name">EU Label Kit</span></div>
-  <span class="reviewed">rules reviewed 15 Nov 2026</span>
-  <div class="seg" id="modeSeg" role="tablist" aria-label="Mode">
-    <button class="seg-btn is-on" type="button" data-mode="single" role="tab" aria-selected="true">Single</button>
-    <button class="seg-btn" type="button" data-mode="batch" role="tab" aria-selected="false">Batch</button>
+<header class="bar">
+  <div class="bar-left">
+    <span class="brand">EU Label Kit</span>
+    <span class="tag" id="rulesTag">rules 15 Nov 2026</span>
   </div>
-  <div class="top-actions">
-    <button class="ghost" id="btnLicense" type="button">License</button>
-    <button class="btn" id="btnPack" type="button">Generate pack</button>
+  <div class="bar-right">
+    <div class="switch" id="modeSwitch" role="tablist" aria-label="Output">
+      <button class="switch-btn is-on" type="button" data-mode="single" role="tab" aria-selected="true">Label</button>
+      <button class="switch-btn" type="button" data-mode="batch" role="tab" aria-selected="false">Batch</button>
+    </div>
+    <button class="link" id="btnLicense" type="button">Licence</button>
+    <button class="btn" id="btnPack" type="button">Print pack</button>
   </div>
 </header>
 
-<main class="shell">
+<main>
+  <section class="intro">
+    <h1>The label that gets your listing approved</h1>
+    <p class="sub">Four documents EU marketplaces keep asking for, printed from one form. Nothing leaves this browser.</p>
+    <div class="intro-actions">
+      <button class="btn btn-lg" id="btnPack2" type="button">Print the pack</button>
+      <button class="link link-sm" id="btnSample" type="button">Fill with an example</button>
+    </div>
+  </section>
 
-  <section class="form-col">
-    <div class="col-head"><h1 id="heroTitle">The four documents EU marketplaces keep asking for</h1><p id="heroSub">Fill the left side once. The right side tells you what applies to your product, and the pack prints it.</p></div>
-
-    <div class="group" id="productGroup">
-      <p class="group-label">Product</p>
-      <label class="field"><span>Product name</span><input id="fProduct" placeholder="Ceramic mug, 350 ml"></label>
-      <div class="two">
+  <div class="work">
+    <form class="form" id="form" autocomplete="off">
+      <fieldset id="productSet">
+        <legend>Product</legend>
+        <label class="field span2"><span>Name</span><input id="fProduct" placeholder="Ceramic mug, 350 ml"></label>
         <label class="field"><span>Brand</span><input id="fBrand" placeholder="Northline"></label>
-        <label class="field"><span>Model / SKU</span><input id="fModel" placeholder="NL-MUG-350"></label>
-      </div>
-      <div class="two">
+        <label class="field"><span>Model or SKU</span><input id="fModel" placeholder="NL-MUG-350"></label>
         <label class="field"><span>Batch or serial</span><input id="fBatch" placeholder="2026-11-A"></label>
         <label class="field"><span>Category</span>
           <select id="fCat">
@@ -57,106 +62,105 @@
             <option value="batteries">Batteries</option>
           </select>
         </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Manufacturer</legend>
+        <label class="field span2"><span>Name as it appears on the label</span><input id="fMaker" placeholder="Ningbo Homeware Co., Ltd"></label>
+        <label class="field span2"><span>Address</span><textarea id="fMakerAddr" rows="2" placeholder="No. 88 Jiangnan Road, Ningbo, Zhejiang 315000, China"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>EU responsible person</legend>
+        <p class="hint">The company in the EU that answers for the product. Small marketplaces reject listings without it.</p>
+        <label class="field span2"><span>Company</span><input id="fRp" placeholder="Northline EU BV"></label>
+        <label class="field span2"><span>Email</span><input id="fRpMail" placeholder="compliance@northline.eu"></label>
+        <label class="field span2"><span>Postal address</span><textarea id="fRpAddr" rows="2" placeholder="Keizersgracht 241, 1016 EA Amsterdam, Netherlands"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Markets</legend>
+        <div class="chips" id="markets"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Warnings</legend>
+        <div class="checks" id="warnings"></div>
+        <label class="field span2"><span>Your own line, optional</span><input id="fWarn" placeholder="Not suitable for children under 3 years"></label>
+      </fieldset>
+
+      <fieldset id="batchSet" hidden>
+        <legend>Batch file</legend>
+        <div class="drop" id="dropZone">
+          <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+          <p>Drop a CSV here, or <button class="link link-inline" id="pickFile" type="button">choose a file</button></p>
+          <p class="drop-sub">product, brand, model, batch, quantity. Quantity is optional.</p>
+        </div>
+        <label class="field span2"><span>Or paste rows</span><textarea id="csvPaste" rows="3" placeholder="product,brand,model,batch,quantity&#10;Ceramic mug 350 ml,Northline,NL-MUG-350,2026-11-A,8"></textarea></label>
+        <div class="batch-bar">
+          <button class="link link-inline" id="loadSample" type="button">Load sample</button>
+          <span class="batch-count" id="batchCount">No file loaded</span>
+        </div>
+      </fieldset>
+    </form>
+
+    <aside class="side">
+      <div class="side-head">
+        <span id="readiness">0 of 5 required</span>
+        <span class="mono" id="labelSize">70 × 50 mm</span>
       </div>
-    </div>
-
-    <div class="group" id="batchGroup" hidden>
-      <p class="group-label">Batch file</p>
-      <div class="drop" id="dropZone">
-        <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
-        <p class="drop-title">Drop a CSV here, or <button class="link" id="pickFile" type="button">choose a file</button></p>
-        <p class="drop-sub">Columns: product, brand, model, batch, quantity. Quantity can be left out, it defaults to 1.</p>
+      <div class="sheet">
+        <div class="spec" id="spec"></div>
+        <div class="dim-x"><span>70 mm</span></div>
+        <div class="dim-y"><span>50 mm</span></div>
       </div>
-      <label class="field"><span>Or paste rows</span><textarea id="csvPaste" rows="4" placeholder="product,brand,model,batch,quantity&#10;Ceramic mug 350 ml,Northline,NL-MUG-350,2026-11-A,8"></textarea></label>
-      <div class="batch-bar">
-        <button class="ghost" id="loadSample" type="button">Load sample</button>
-        <span class="batch-count" id="batchCount">No file loaded</span>
+      <p class="note" id="note">Your label appears here as you type.</p>
+
+      <div class="batch-panel" id="batchPanel" hidden>
+        <div class="batch-head"><span>Batch preview</span><span class="mono" id="batchTotal">0 labels</span></div>
+        <div class="batch-table" id="batchTable"></div>
       </div>
-    </div>
+    </aside>
+  </div>
 
-    <div class="group">
-      <p class="group-label">Maker and responsible person</p>
-      <label class="field"><span>Manufacturer (as on the label)</span><input id="fMaker" placeholder="Ningbo Homeware Co., Ltd"></label>
-      <label class="field"><span>Manufacturer address</span><textarea id="fMakerAddr" rows="2" placeholder="No. 88 Jiangnan Road, Ningbo, Zhejiang 315000, China"></textarea></label>
-      <div class="two">
-        <label class="field"><span>Responsible person (EU)</span><input id="fRp" placeholder="Northline EU BV"></label>
-        <label class="field"><span>RP email</span><input id="fRpMail" placeholder="compliance@northline.eu"></label>
-      </div>
-      <label class="field"><span>RP postal address</span><textarea id="fRpAddr" rows="2" placeholder="Keizersgracht 241, 1016 EA Amsterdam, Netherlands"></textarea></label>
+  <section class="check">
+    <div class="check-head">
+      <h2>What applies to you</h2>
+      <p>Every row links to the regulation or the register. Open a row to read the basis.</p>
     </div>
-
-    <div class="group">
-      <p class="group-label">Where you sell</p>
-      <div class="chips" id="markets"></div>
-      <p class="hint">Language of the warnings follows the market. The label itself is language-neutral apart from warnings.</p>
-    </div>
-
-    <div class="group">
-      <p class="group-label">Warnings to print</p>
-      <div class="checks" id="warnings"></div>
-      <label class="field"><span>Your own warning line (optional)</span><input id="fWarn" placeholder="Not suitable for children under 3 years"></label>
-    </div>
-
-    <p class="disclaimer">Informational template, not legal advice. Every requirement card links to the official register or the regulation text. Check the register before you print a run of labels.</p>
+    <div class="rows" id="checklist"></div>
   </section>
 
-  <section class="dossier-col">
-    <div class="dossier-head">
-      <h2>Compliance dossier</h2>
-      <p id="dossierSub">Pick a market to see what applies.</p>
-    </div>
-    <div class="preview-wrap" id="batchPreviewWrap" hidden>
-      <div class="preview-head"><span>Batch preview</span><span class="mono" id="batchTotal">0 labels</span></div>
-      <div class="batch-table" id="batchTable"></div>
-    </div>
-
-    <div class="cards" id="cards"></div>
-
-    <div class="preview-wrap" id="labelWrap">
-      <div class="preview-head"><span>Label preview</span><span class="mono" id="labelSize">70 × 37 mm</span></div>
-      <div class="label-preview" id="labelPreview"></div>
+  <section class="how">
+    <h2>Three steps</h2>
+    <div class="steps">
+      <div><span class="step-n">1</span><h3>Fill the form</h3><p>Product, manufacturer, and the EU company that answers for it.</p></div>
+      <div><span class="step-n">2</span><h3>Print the pack</h3><p>Labels at 70 by 50 mm, eight per A4 page, plus the mandate, the declaration and the listing text.</p></div>
+      <div><span class="step-n">3</span><h3>Stick and ship</h3><p>Cut on the marks, apply to the product or its box, upload the rest with the listing.</p></div>
     </div>
   </section>
 </main>
 
-<section class="below">
-  <div class="below-inner">
-    <h2>Why four documents</h2>
-    <p class="lede">Since 13 December 2024 the General Product Safety Regulation applies to every consumer product sold in the EU, including distance sales. Marketplaces now check listings for a named EU responsible person, traceability on the product, and warnings in the local language. These are the four artefacts that get checked.</p>
-    <div class="three">
-      <div><h3>1. Product label</h3><p>Name and postal address of the EU responsible person, plus the manufacturer and a batch or serial number, on the product or its packaging.</p></div>
-      <div><h3>2. Responsible person mandate</h3><p>The written designation an EU company signs so it can act for a manufacturer outside the EU. Marketplaces and customs ask for it.</p></div>
-      <div><h3>3. Declaration of conformity</h3><p>Required for CE-marked categories: toys, electronics, batteries, and anything under a directive that names it.</p></div>
-      <div><h3>4. Listing block</h3><p>The exact text to paste into Amazon, Etsy or your own store so the responsible person and warnings appear before checkout.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="below faq">
-  <div class="below-inner">
-    <h2>Questions</h2>
-    <details><summary>Is this legal advice?</summary><p>No. It is a template engine with the requirement list for each market, linked to the official registers. You or your EU partner remain responsible for the content.</p></details>
-    <details><summary>Does it work for a seller outside the EU?</summary><p>That is the case it is built for. A manufacturer outside the EU needs a responsible person established in the EU, and the label has to carry that person's name, postal address and email.</p></details>
-    <details><summary>What about packaging and WEEE registration?</summary><p>Those are separate per-country registers, listed on each card with the official link. This kit generates the documents, it does not register you.</p></details>
-    <details><summary>Can I edit the output?</summary><p>The pack prints from your browser, so text is selectable in the PDF. For layout changes, edit the JSON preset and reload.</p></details>
-  </div>
-</section>
-
-<footer class="foot"><span>EU Label Kit · rules reviewed 15 Nov 2026</span><span>Templates only, no legal advice</span></footer>
+<footer class="foot">
+  <span>Templates, not legal advice. Check the register before a production run.</span>
+  <span class="mono">rules reviewed 15 Nov 2026</span>
+</footer>
 
 <div class="pack" id="pack" aria-hidden="true"></div>
+
 <div class="gate" id="gate" hidden>
-  <div class="gate-card">
-    <button class="gate-close" id="gateClose" type="button" aria-label="Close">×</button>
-    <h2>Unlock the print pack</h2>
-    <p>The dossier and the label preview are free. The pack removes the watermark, adds the mandate letter, the declaration of conformity, the listing block, and batch mode for a whole CSV of SKUs.</p>
-    <div class="gate-actions">
-      <a class="btn" id="buyLink" href="#" target="_blank" rel="noopener">Buy for $9</a>
-      <div class="gate-or">already bought?</div>
-      <div class="gate-key"><input id="keyInput" placeholder="License key" spellcheck="false"><button class="ghost" id="keyApply" type="button">Activate</button></div>
-      <p class="gate-msg" id="gateMsg"></p>
+  <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <button class="gate-close" id="gateClose" type="button" aria-label="Close">Close</button>
+    <h2 id="gateTitle">Unlock the print pack</h2>
+    <p>The pack removes the watermark, adds the mandate letter, the declaration of conformity, the listing text and batch mode for a whole CSV.</p>
+    <a class="btn btn-block" id="buyLink" href="#" target="_blank" rel="noopener">Buy for $9</a>
+    <div class="gate-or">Already bought</div>
+    <div class="gate-key">
+      <input id="keyInput" placeholder="Unlock code" spellcheck="false" aria-label="Unlock code">
+      <button class="btn btn-quiet" id="keyApply" type="button">Apply</button>
     </div>
-    <p class="gate-fine">$9 once. Unlimited labels and batches for one seller account. No subscription, no account.</p>
+    <p class="gate-msg" id="gateMsg"></p>
+    <p class="gate-fine">$9 once. Unlimited labels and batches, one seller account, no subscription.</p>
   </div>
 </div>
 <div class="toasts" id="toasts"></div>
