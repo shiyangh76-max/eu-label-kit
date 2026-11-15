@@ -35,17 +35,18 @@
   </div>
 </header>
 
-<main>
-  <section class="intro">
-    <h1>The label that gets your listing approved</h1>
-    <p class="sub">Four documents EU marketplaces keep asking for, printed from one form. Nothing leaves this browser.</p>
-    <div class="intro-actions">
-      <button class="btn btn-lg" id="btnPack2" type="button">Print the pack</button>
-      <button class="link link-sm" id="btnSample" type="button">Fill with an example</button>
-    </div>
-  </section>
+<main class="shell">
 
-  <div class="work">
+  <section class="pane pane-left" id="paneLeft">
+    <div class="intro">
+      <h1>The label that gets your listing approved</h1>
+      <p class="sub">Four documents EU marketplaces keep asking for, printed from one form. Nothing leaves this browser.</p>
+      <div class="intro-actions">
+        <button class="btn btn-lg" id="btnPack2" type="button">Print the pack</button>
+        <button class="link link-sm" id="btnSample" type="button">Fill with an example</button>
+      </div>
+    </div>
+
     <form class="form" id="form" autocomplete="off">
       <fieldset id="productSet">
         <legend>Product</legend>
@@ -106,47 +107,48 @@
       </fieldset>
     </form>
 
-    <aside class="side">
-      <div class="side-head">
-        <span id="readiness">0 of 5 required</span>
-        <span class="mono" id="labelSize">70 × 50 mm</span>
+    <section class="check">
+      <div class="check-head">
+        <h2>What applies to you</h2>
+        <p>Every row links to the regulation or the register. Open a row to read the basis.</p>
       </div>
-      <div class="sheet">
-        <div class="spec" id="spec"></div>
-        <div class="dim-x"><span>70 mm</span></div>
-        <div class="dim-y"><span>50 mm</span></div>
-      </div>
-      <p class="note" id="note">Your label appears here as you type.</p>
+      <div class="rows" id="checklist"></div>
+    </section>
 
-      <div class="batch-panel" id="batchPanel" hidden>
-        <div class="batch-head"><span>Batch preview</span><span class="mono" id="batchTotal">0 labels</span></div>
-        <div class="batch-table" id="batchTable"></div>
+    <section class="how">
+      <h2>Three steps</h2>
+      <div class="steps">
+        <div><span class="step-n">1</span><h3>Fill the form</h3><p>Product, manufacturer, and the EU company that answers for it.</p></div>
+        <div><span class="step-n">2</span><h3>Print the pack</h3><p>Labels at 70 by 50 mm, eight per A4 page, plus the mandate, the declaration and the listing text.</p></div>
+        <div><span class="step-n">3</span><h3>Stick and ship</h3><p>Cut on the marks, apply to the product or its box, upload the rest with the listing.</p></div>
       </div>
-    </aside>
-  </div>
+    </section>
 
-  <section class="check">
-    <div class="check-head">
-      <h2>What applies to you</h2>
-      <p>Every row links to the regulation or the register. Open a row to read the basis.</p>
-    </div>
-    <div class="rows" id="checklist"></div>
+    <footer class="foot">
+      <span>Templates, not legal advice. Check the register before a production run.</span>
+      <span class="mono">rules reviewed 15 Nov 2026</span>
+    </footer>
   </section>
 
-  <section class="how">
-    <h2>Three steps</h2>
-    <div class="steps">
-      <div><span class="step-n">1</span><h3>Fill the form</h3><p>Product, manufacturer, and the EU company that answers for it.</p></div>
-      <div><span class="step-n">2</span><h3>Print the pack</h3><p>Labels at 70 by 50 mm, eight per A4 page, plus the mandate, the declaration and the listing text.</p></div>
-      <div><span class="step-n">3</span><h3>Stick and ship</h3><p>Cut on the marks, apply to the product or its box, upload the rest with the listing.</p></div>
+  <aside class="pane pane-right" id="paneRight">
+    <div class="side-head">
+      <span id="readiness">0 of 5 required</span>
+      <span class="mono" id="labelSize">70 × 50 mm</span>
     </div>
-  </section>
+    <div class="sheet">
+      <div class="spec" id="spec"></div>
+      <div class="dim-x"><span>70 mm</span></div>
+      <div class="dim-y"><span>50 mm</span></div>
+    </div>
+    <p class="note" id="note">Your label appears here as you type.</p>
+
+    <div class="batch-panel" id="batchPanel" hidden>
+      <div class="batch-head"><span>Batch preview</span><span class="mono" id="batchTotal">0 labels</span></div>
+      <div class="batch-table" id="batchTable"></div>
+    </div>
+  </aside>
+
 </main>
-
-<footer class="foot">
-  <span>Templates, not legal advice. Check the register before a production run.</span>
-  <span class="mono">rules reviewed 15 Nov 2026</span>
-</footer>
 
 <div class="pack" id="pack" aria-hidden="true"></div>
 
