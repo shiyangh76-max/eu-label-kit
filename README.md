@@ -21,9 +21,8 @@ $9 is a demand test, not a valuation. At this price the question is only whether
 
 ## Go live in 30 seconds
 
-1. Open https://app.netlify.com/drop and drag this folder in.
-2. Optional: point a domain at it. A real domain converts better than a netlify subdomain.
-3. Keep the repo private. Four text files in public is a free copy.
+Live now at https://shiyangh76-max.github.io/eu-label-kit/ (GitHub Pages, main branch, root).
+The repo is public, so the source is readable. That is a deliberate trade-off for the demand test: the paywall is client side and could be bypassed anyway. If the product sells, move it to a private host (Cloudflare Pages with a private repo) and rotate the licence check.
 
 ## Take money (Lemon Squeezy, 15 minutes)
 
