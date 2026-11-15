@@ -4,7 +4,7 @@
   var $ = function (id) { return document.getElementById(id); };
 
   var CONFIG = {
-    buyUrl: '',
+    buyUrl: 'https://payhip.com/b/Ruh72',
     validateUrl: '',
     productId: '',
     price: '$9'
