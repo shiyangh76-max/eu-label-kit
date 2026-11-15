@@ -540,6 +540,7 @@
 
   /* ---------- wiring ---------- */
   function wire() {
+    try { if (window.self !== window.top) document.body.classList.add('is-framed'); } catch (e) { document.body.classList.add('is-framed'); }
     load();
     renderChips(); renderWarnings(); renderChecklist(); renderSpecimen();
 
