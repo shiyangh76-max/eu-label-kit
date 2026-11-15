@@ -140,7 +140,7 @@
       linkText: 'Open the first market register'
     });
     out.push({
-      tag: 'info', title: 'Packaging and Packaging Waste Regulation from 12 August 2026',
+      tag: 'info', state: 'From 12 Aug 2026', title: 'Packaging and Packaging Waste Regulation',
       body: 'PPWR adds harmonised recyclability requirements, a material composition label on packaging, and minimum recycled content. If your packaging is printed before August 2026, plan the label change now.',
       why: 'Regulation (EU) 2025/40. It replaces the packaging directive and applies directly in every member state.',
       link: 'https://eur-lex.europa.eu/eli/reg/2025/40/oj', linkText: 'Regulation (EU) 2025/40'
@@ -149,21 +149,30 @@
   }
 
   /* ---------- render ---------- */
-  function renderCards() {
-    var host = $('cards');
+  function renderChecklist() {
+    var host = $('checklist');
+    if (!host) return;
     host.innerHTML = '';
-    requirements().forEach(function (r) {
-      var d = document.createElement('div');
-      d.className = 'card ' + (r.tag === 'required' ? 'req' : r.tag === 'conditional' ? 'cond' : 'info');
-      d.innerHTML = '<h3>' + esc(r.title) + '<span class="tag">' + r.tag + '</span></h3>' +
-        '<p>' + esc(r.body) + '</p>' +
-        '<p class="why">' + esc(r.why) + '</p>' +
-        '<a href="' + r.link + '" target="_blank" rel="noopener">' + esc(r.linkText) + '</a>';
-      host.appendChild(d);
+    requirements().forEach(function (r, i) {
+      var row = document.createElement('div');
+      row.className = 'row' + (r.tag === 'conditional' ? ' is-cond' : '');
+      var id = 'row-d' + i;
+      row.innerHTML = '<span class="row-n">' + String(i + 1).padStart(2, '0') + '</span>' +
+        '<button class="row-btn" type="button" aria-expanded="false" aria-controls="' + id + '">' +
+          '<span class="row-title">' + esc(r.title) + '</span>' +
+          '<span class="row-state">' + esc(r.state || (r.tag === 'required' ? 'Required' : r.tag === 'conditional' ? 'If it applies' : 'Note')) + '</span>' +
+        '</button>' +
+        '<div class="row-detail" id="' + id + '" hidden><p>' + esc(r.body) + '</p><p class="why">' + esc(r.why) + '</p>' +
+        '<a href="' + r.link + '" target="_blank" rel="noopener">' + esc(r.linkText) + '</a></div>';
+      var btn = row.querySelector('.row-btn');
+      btn.addEventListener('click', function () {
+        var d = row.querySelector('.row-detail');
+        var open = d.hidden;
+        d.hidden = !open;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      host.appendChild(row);
     });
-    $('dossierSub').textContent = S.markets.length
-      ? S.markets.length + ' market' + (S.markets.length > 1 ? 's' : '') + ' selected · ' + CATS[S.cat].label + ' · ' + requirements().length + ' requirements'
-      : 'Pick a market to see what applies.';
   }
 
   function renderChips() {
@@ -177,7 +186,7 @@
       b.onclick = function () {
         var i = S.markets.indexOf(m.code);
         if (i >= 0) S.markets.splice(i, 1); else S.markets.push(m.code);
-        renderChips(); renderCards(); renderLabel(); save();
+        renderChips(); renderChecklist(); renderSpecimen(); save();
       };
       host.appendChild(b);
     });
@@ -188,13 +197,13 @@
     host.innerHTML = '';
     WARNINGS.forEach(function (w) {
       var l = document.createElement('label');
-      l.className = 'check';
+      l.className = 'opt';
       l.innerHTML = '<input type="checkbox" ' + (S.warnings.indexOf(w.id) >= 0 ? 'checked' : '') + '><span>' + esc(w.text) + '</span>';
       l.querySelector('input').onchange = function (e) {
         var i = S.warnings.indexOf(w.id);
         if (e.target.checked && i < 0) S.warnings.push(w.id);
         if (!e.target.checked && i >= 0) S.warnings.splice(i, 1);
-        renderLabel(); save();
+        renderSpecimen(); save();
       };
       host.appendChild(l);
     });
@@ -206,17 +215,45 @@
     return list;
   }
 
-  function renderLabel() {
+  function renderSpecimen() {
+    var host = $('spec');
+    if (!host) return;
     var w = warnLines();
-    var el = $('labelPreview');
-    el.innerHTML =
-      '<div class="lp-name">' + esc(S.product || 'Product name') + '</div>' +
-      '<div class="lp-row">' + esc(S.brand || 'Brand') + ' · ' + esc(S.model || 'Model') + ' · ' + esc(S.batch || 'Batch') + '</div>' +
-      '<div class="lp-row">' + esc(S.maker || 'Manufacturer') + '</div>' +
-      '<div class="lp-row">EU RP: ' + esc(S.rp || 'Responsible person') + ', ' + esc(S.rpAddr || 'address') + ', ' + esc(S.rpMail || 'email') + '</div>' +
-      (CATS[S.cat].ce ? '<div class="lp-ce">CE</div>' : '') +
-      (w.length ? '<div class="lp-warn">' + w.map(esc).join('<br>') + '</div>' : '');
-    $('labelSize').textContent = '70 × 50 mm';
+    host.innerHTML =
+      '<div class="spec-name' + (S.product ? '' : ' is-missing') + '">' + esc(S.product || 'Product name') + '</div>' +
+      '<div class="spec-code' + ((S.brand || S.model) ? '' : ' is-missing') + '">' + esc([S.brand, S.model].filter(Boolean).join(' ') || 'Brand and model') + '</div>' +
+      '<div class="spec-batch' + (S.batch ? '' : ' is-missing') + '">' + esc(S.batch ? 'Batch ' + S.batch : 'Batch number') + '</div>' +
+      '<div class="spec-maker' + (S.maker ? '' : ' is-missing') + '">' + escBr(S.maker || 'Manufacturer name') + (S.makerAddr ? '<br>' + escBr(S.makerAddr) : '') + '</div>' +
+      '<div class="spec-rp">' +
+        '<span class="rp-k">EU responsible person</span>' +
+        '<span class="rp-n' + (S.rp ? '' : ' is-missing') + '">' + esc(S.rp || 'Not set') + '</span>' +
+        '<span class="rp-a' + (S.rpAddr ? '' : ' is-missing') + '">' + escBr(S.rpAddr || 'Postal address') + '</span>' +
+        '<span class="rp-e' + (S.rpMail ? '' : ' is-missing') + '">' + esc(S.rpMail || 'Email') + '</span>' +
+      '</div>' +
+      '<div class="spec-foot"><span class="ce' + (CATS[S.cat].ce ? '' : ' is-missing') + '">' + (CATS[S.cat].ce ? 'CE' : '') + '</span>' +
+      '<span class="warn">' + (w.length ? esc(w.join(' ')) : '<span class="is-missing">Warnings appear here</span>') + '</span></div>';
+    renderReadiness();
+  }
+
+  function renderReadiness() {
+    var need = [
+      ['product name', S.product],
+      ['manufacturer', S.maker],
+      ['responsible person', S.rp],
+      ['their address', S.rpAddr],
+      ['their email', S.rpMail]
+    ];
+    var missing = need.filter(function (n) { return !String(n[1] || '').trim(); });
+    var done = need.length - missing.length;
+    var label = $('readiness');
+    if (label) label.textContent = done + ' of ' + need.length + ' required';
+    var note = $('note');
+    if (note) {
+      note.className = 'note';
+      note.textContent = missing.length
+        ? 'Missing: ' + missing.map(function (m) { return m[0]; }).join(', ') + '.'
+        : 'Ready. Print the pack, cut on the marks.';
+    }
   }
 
   /* ---------- pack ---------- */
@@ -283,6 +320,8 @@
     var items = batchItems(), total = totalLabels();
     $('batchTotal').textContent = total + ' labels';
     $('batchCount').textContent = items.length ? items.length + ' SKUs · ' + total + ' labels' : 'No file loaded';
+    if (S.mode === 'batch' && $('readiness')) $('readiness').textContent = items.length ? items.length + ' SKUs · ' + total + ' labels' : 'No file yet';
+    if ($('labelSize')) $('labelSize').hidden = S.mode === 'batch';
     if (!items.length) { host.innerHTML = '<div class="batch-empty">Drop a CSV or load the sample to see the table.</div>'; return; }
     var shown = items.slice(0, 40).map(function (it) {
       return '<tr><td>' + esc(it.product) + '</td><td>' + esc(it.model) + '</td><td>' + esc(it.batch) + '</td><td class="qty">' + it.qty + '</td></tr>';
@@ -423,22 +462,41 @@
 
   function setMode(m) {
     S.mode = m === 'batch' ? 'batch' : 'single';
-    [].forEach.call(document.querySelectorAll('.seg-btn'), function (b) {
+    [].forEach.call(document.querySelectorAll('.switch-btn'), function (b) {
       var on = b.getAttribute('data-mode') === S.mode;
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    $('heroTitle').textContent = S.mode === 'batch' ? 'Labels for the whole catalogue in one print' : 'The four documents EU marketplaces keep asking for';
-    $('heroSub').textContent = S.mode === 'batch' ? 'Upload a CSV of SKUs, keep one responsible person block, print every label in one file.' : 'Fill the left side once. The right side tells you what applies to your product, and the pack prints it.';
-    $('productGroup').hidden = S.mode === 'batch';
-    $('batchGroup').hidden = S.mode !== 'batch';
-    $('labelWrap').hidden = S.mode === 'batch';
-    $('batchPreviewWrap').hidden = S.mode !== 'batch';
+    $('productSet').hidden = S.mode === 'batch';
+    $('batchSet').hidden = S.mode !== 'batch';
+    var sheet = document.querySelector('.sheet');
+    if (sheet) sheet.hidden = S.mode === 'batch';
+    if ($('note')) $('note').hidden = S.mode === 'batch';
+    if ($('batchPanel')) $('batchPanel').hidden = S.mode !== 'batch';
     renderBatch();
+    if (S.mode === 'single') renderReadiness();
     save();
   }
 
-  /* ---------- license ---------- */
+  function sample() {
+    S.product = 'Ceramic mug, 350 ml';
+    S.brand = 'Northline';
+    S.model = 'NL-MUG-350';
+    S.batch = '2026-11-A';
+    S.maker = 'Ningbo Homeware Co., Ltd';
+    S.makerAddr = 'No. 88 Jiangnan Road\nNingbo, Zhejiang 315000, China';
+    S.rp = 'Northline EU BV';
+    S.rpMail = 'compliance@northline.eu';
+    S.rpAddr = 'Keizersgracht 241\n1016 EA Amsterdam, Netherlands';
+    S.markets = ['DE', 'FR'];
+    if (!S.warnings.length) S.warnings = ['age3'];
+    [['fProduct', 'product'], ['fBrand', 'brand'], ['fModel', 'model'], ['fBatch', 'batch'], ['fMaker', 'maker'], ['fMakerAddr', 'makerAddr'], ['fRp', 'rp'], ['fRpMail', 'rpMail'], ['fRpAddr', 'rpAddr']].forEach(function (p) {
+      var el = $(p[0]); if (el) el.value = S[p[1]] || '';
+    });
+    renderChips(); renderWarnings(); renderSpecimen(); renderChecklist(); save();
+    toast('Example filled in');
+  }
+
   function keyOk(raw) {
     var k = String(raw || '').trim().toUpperCase().replace(/\s+/g, '');
     if (!/^ELK-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(k)) return false;
@@ -483,22 +541,30 @@
   /* ---------- wiring ---------- */
   function wire() {
     load();
-    renderChips(); renderWarnings(); renderCards(); renderLabel();
+    renderChips(); renderWarnings(); renderChecklist(); renderSpecimen();
 
     var map = { fProduct: 'product', fBrand: 'brand', fModel: 'model', fBatch: 'batch', fCat: 'cat', fMaker: 'maker', fMakerAddr: 'makerAddr', fRp: 'rp', fRpMail: 'rpMail', fRpAddr: 'rpAddr', fWarn: 'warnOwn' };
     Object.keys(map).forEach(function (id) {
       var el = $(id);
+      if (!el) return;
       el.value = S[map[id]] || '';
       el.addEventListener('input', function (e) {
         S[map[id]] = e.target.value;
-        renderLabel(); renderCards(); save();
+        renderSpecimen(); renderChecklist(); save();
       });
     });
-    $('fCat').addEventListener('change', function (e) { S.cat = e.target.value; renderCards(); renderLabel(); save(); });
+    $('fCat').addEventListener('change', function (e) { S.cat = e.target.value; renderChecklist(); renderSpecimen(); save(); });
 
     $('btnPack').addEventListener('click', printPack);
+    if ($('btnPack2')) $('btnPack2').addEventListener('click', printPack);
+    if ($('btnSample')) $('btnSample').addEventListener('click', sample);
+    $('btnLicense').addEventListener('click', openGate);
+    $('gateClose').addEventListener('click', closeGate);
+    $('gate').addEventListener('click', function (e) { if (e.target === $('gate')) closeGate(); });
+    $('keyApply').addEventListener('click', function () { activate($('keyInput').value); });
+    $('keyInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') activate(e.target.value); });
 
-    [].forEach.call(document.querySelectorAll('.seg-btn'), function (b) {
+    [].forEach.call(document.querySelectorAll('.switch-btn'), function (b) {
       b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
     });
     $('pickFile').addEventListener('click', function () { $('csvFile').click(); });
@@ -528,15 +594,11 @@
       if (v) loadCSV(v, 'pasted');
     });
     $('loadSample').addEventListener('click', function () { loadCSV(SAMPLE_CSV, 'sample.csv'); });
-    $('btnLicense').addEventListener('click', openGate);
-    $('gateClose').addEventListener('click', closeGate);
-    $('gate').addEventListener('click', function (e) { if (e.target === $('gate')) closeGate(); });
-    $('keyApply').addEventListener('click', function () { activate($('keyInput').value); });
-    $('keyInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') activate(e.target.value); });
+
     if (CONFIG.buyUrl) $('buyLink').href = CONFIG.buyUrl;
     else {
       $('buyLink').textContent = 'Buy for $9';
-      $('buyLink').onclick = function (e) { e.preventDefault(); $('gateMsg').className = 'gate-msg'; $('gateMsg').textContent = 'Checkout opens to the first buyers this week. If you already have a key, paste it below.'; };
+      $('buyLink').onclick = function (e) { e.preventDefault(); $('gateMsg').className = 'gate-msg'; $('gateMsg').textContent = 'Checkout opens to the first buyers this week. If you already have a code, paste it below.'; };
     }
     window.addEventListener('beforeunload', save);
     setMode(S.mode);
